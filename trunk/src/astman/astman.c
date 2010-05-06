@@ -240,7 +240,7 @@ static int astman_get_input(struct mansession *s, char *output)
   }
   return 0;
 }
-/**
+/*******************************************************************************
  *  \fn astman_add_param(char *buf, int buflen, char *header, char *value)
  *  \brief  Add a new parameter to the Command
  *  \param  buf
@@ -248,7 +248,7 @@ static int astman_get_input(struct mansession *s, char *output)
  *  \param  header
  *  \param  value
  *  \return Number of wrote characters into the buf
- */
+ ******************************************************************************/
 char *astman_get_header(struct message *m, const char *var)
 {
   char cmp[80];
@@ -279,16 +279,15 @@ static int astman_process_message(struct mansession *s, struct message *m)
   char event[80];
 
   strncpy(event, astman_get_header(m, "Event"), sizeof(event));
-  strncpy(event, ASTMAN_DEFAULT_EVENT, sizeof(event));
   if (!strlen(event)) {
-    fprintf(stderr, "Missing event in request\n");
+    astlog(ASTLOG_ERROR, "Missing event in request\n");
     return 0;
   }
 
   if (s->debug) {
-    printf("Got event packet: %s\n", event);
+    astlog(ASTLOG_INFO, "Got event packet: %s\n", event);
     for (x=0;x<m->hdrcount;x++) {
-      printf("Header: %s\n", m->headers[x]);
+      astlog(ASTLOG_INFO, "Header: %s\n", m->headers[x]);
     }
   }
 
@@ -315,7 +314,7 @@ static int astman_process_message(struct mansession *s, struct message *m)
   }
 
   if (s->debug && x >= s->eventcount)
-    fprintf(stderr, "Ignoring unknown event '%s'\n", event);
+    astlog(ASTLOG_ERROR, "Ignoring unknown event '%s'\n", event);
 
   return 0;
 }

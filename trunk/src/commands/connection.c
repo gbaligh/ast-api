@@ -24,7 +24,11 @@
 
 astContext ast_api;
 
-
+/******************************************************************************
+ *  \fn astInit()
+ *  \brief  Add a new parameter to the Command
+ *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
+ ******************************************************************************/
 int astInit()
 {
     ast_api.s = NULL;
@@ -35,7 +39,11 @@ int astInit()
     ast_api.connected = 0;
     return ASTMAN_SUCCESS;
 }
-
+/******************************************************************************
+ *  \fn astConnect()
+ *  \brief  Add a new parameter to the Command
+ *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
+ ******************************************************************************/
 int astConnect(char * username, char *secret, char *host, int port)
 {
     strncpy(ast_api.username, username, AST_API_MAX_STR_LENGTH);
@@ -45,7 +53,8 @@ int astConnect(char * username, char *secret, char *host, int port)
 
     ast_api.s = astman_open();
     astman_connect(ast_api.s, ast_api.host, ast_api.port);
-    if(astman_login(ast_api.s, ast_api.username, ast_api.secret) == ASTMAN_FAILURE)
+    if(astman_login(ast_api.s, ast_api.username, ast_api.secret)
+                == ASTMAN_FAILURE)
     {
         astlog(ASTLOG_ERROR, "Error in authorization");
         return ASTMAN_FAILURE;
@@ -54,7 +63,11 @@ int astConnect(char * username, char *secret, char *host, int port)
     astman_add_event_handler_system(ast_api.s, astGetDefaultCallback());
     return ASTMAN_SUCCESS;
 }
-
+/******************************************************************************
+ *  \fn astDeconnect()
+ *  \brief  Add a new parameter to the Command
+ *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
+ ******************************************************************************/
 int astDeconnect()
 {
     astman_logoff(ast_api.s);
