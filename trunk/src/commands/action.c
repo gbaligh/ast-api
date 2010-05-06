@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  *   along with libast-api.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *  @file action.c
+ *  @brief Base Functions implementation for the ASTMAN API.
+ *  @author Baligh.GUESMI Emira.MHAROUECH Olivier.BENEZE
+ *  @version 0.1
+ *  @date 26 Avril 2010
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,13 +36,12 @@ extern astContext ast_api;
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astListCommands()
-{
+int astListCommands() {
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
     memset(&ast_api.m, 0, AST_API_MAX_STR_LENGTH);
     astman_manager_action_params(ast_api.s, "ListCommands",
-                                    "Parameters: ActionID"CRLF);
+                                 "Parameters: ActionID"CRLF);
     astman_wait_for_response(ast_api.s, &ast_api.m, 0);
     astman_dump_message(&ast_api.m);
 
@@ -46,8 +52,7 @@ int astListCommands()
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astListCategories(char *filename)
-{
+int astListCategories(char *filename) {
 
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
@@ -68,8 +73,7 @@ int astListCategories(char *filename)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astGetConfig(char *filename)
-{
+int astGetConfig(char *filename) {
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
 
@@ -90,8 +94,7 @@ int astGetConfig(char *filename)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astSipPeers(char *actionid)
-{
+int astSipPeers(char *actionid) {
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
     int rv = 0;
@@ -110,8 +113,7 @@ int astSipPeers(char *actionid)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astSipShowPeer(char *peer, char *actionid)
-{
+int astSipShowPeer(char *peer, char *actionid) {
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
     int res = 0;
@@ -121,8 +123,7 @@ int astSipShowPeer(char *peer, char *actionid)
     astman_manager_action(ast_api.s, "SIPshowpeer", params);
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
     //astman_dump_message(&ast_api.m);
-    if ( res > 0 && response_is(&ast_api.m, "Success"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Success")) {
         return res;
     }
 
@@ -134,8 +135,7 @@ int astSipShowPeer(char *peer, char *actionid)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astPing(char *actionid)
-{
+int astPing(char *actionid) {
     int res;
     char params[MAX_LEN] = "";
 
@@ -143,8 +143,7 @@ int astPing(char *actionid)
 
     astman_manager_action_params(ast_api.s, "Ping", params);
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
-    if ( res > 0 && response_is(&ast_api.m, "Pong"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Pong")) {
         return res;
     }
     return ASTMAN_FAILURE;
@@ -154,8 +153,7 @@ int astPing(char *actionid)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astExecuteCLICommand(char *command, char *actionid)
-{
+int astExecuteCLICommand(char *command, char *actionid) {
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
 
@@ -171,8 +169,7 @@ int astExecuteCLICommand(char *command, char *actionid)
     astman_manager_action(ast_api.s, "Command", params);
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
     astman_dump_message(&ast_api.m);
-    if ( res > 0 && response_is(&ast_api.m, "Follows"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Follows")) {
         return res;
     }
     return ASTMAN_FAILURE;
@@ -183,8 +180,7 @@ int astExecuteCLICommand(char *command, char *actionid)
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
 int astUpdateConfig(char *filename, int reload, char *category, char *param,
-                    char *value, char *action)
-{
+                    char *value, char *action) {
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
 
@@ -209,8 +205,7 @@ int astUpdateConfig(char *filename, int reload, char *category, char *param,
 
     astman_manager_action_params(ast_api.s, "updateconfig", params);
     rv = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
-    if (rv < 0 || !response_is(&ast_api.m, "Success"))
-    {
+    if (rv < 0 || !response_is(&ast_api.m, "Success")) {
         astman_dump_message(&ast_api.m);
         return ASTMAN_FAILURE;
     }
@@ -221,8 +216,7 @@ int astUpdateConfig(char *filename, int reload, char *category, char *param,
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astGetVar(char *channel, char *variable, char *actionid)
-{
+int astGetVar(char *channel, char *variable, char *actionid) {
     int res;
     char params[MAX_LEN] = "";
 
@@ -235,8 +229,7 @@ int astGetVar(char *channel, char *variable, char *actionid)
 
     astman_manager_action_params(ast_api.s, "GetVar", params);
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
-    if ( res > 0 && response_is(&ast_api.m, "Success"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Success")) {
         return res;
     }
     return ASTMAN_FAILURE;
@@ -246,8 +239,7 @@ int astGetVar(char *channel, char *variable, char *actionid)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astSetVar(char *channel, char *variable, char *value, char *actionid)
-{
+int astSetVar(char *channel, char *variable, char *value, char *actionid) {
     int res;
     char params[MAX_LEN] = "";
 
@@ -261,8 +253,7 @@ int astSetVar(char *channel, char *variable, char *value, char *actionid)
 
     astman_manager_action_params(ast_api.s, "SetVar", params);
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
-    if ( res > 0 && response_is(&ast_api.m, "Success"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Success")) {
         return res;
     }
     return ASTMAN_FAILURE;
@@ -272,8 +263,7 @@ int astSetVar(char *channel, char *variable, char *value, char *actionid)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astCoreStatus(char *actionid)
-{
+int astCoreStatus(char *actionid) {
     int res;
     char params[MAX_LEN] = "";
 
@@ -282,8 +272,7 @@ int astCoreStatus(char *actionid)
     astman_manager_action_params(ast_api.s, "CoreStatus", params);
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
     astman_dump_message(&ast_api.m);
-    if ( res > 0 && response_is(&ast_api.m, "Success"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Success")) {
         return res;
     }
     return ASTMAN_FAILURE;
@@ -293,8 +282,7 @@ int astCoreStatus(char *actionid)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astCoreSettings(char *actionid)
-{
+int astCoreSettings(char *actionid) {
     int res;
     char params[MAX_LEN] = "";
 
@@ -303,8 +291,7 @@ int astCoreSettings(char *actionid)
     astman_manager_action_params(ast_api.s, "CoreSettings", params);
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
     astman_dump_message(&ast_api.m);
-    if ( res > 0 && response_is(&ast_api.m, "Success"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Success")) {
         return res;
     }
     return ASTMAN_FAILURE;
@@ -314,8 +301,7 @@ int astCoreSettings(char *actionid)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int CoreShowChannelsCallBack(struct mansession *s, struct message *m)
-{
+int CoreShowChannelsCallBack(struct mansession *s, struct message *m) {
     printf("11111");
     return 0;
 }
@@ -324,8 +310,7 @@ int CoreShowChannelsCallBack(struct mansession *s, struct message *m)
  *  \brief  Add a new parameter to the Command
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astCoreShowChannels(char *actionid)
-{
+int astCoreShowChannels(char *actionid) {
     int res;
     char params[MAX_LEN] = "";
 
@@ -335,12 +320,11 @@ int astCoreShowChannels(char *actionid)
     res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
     //res = astman_wait_for_response(ast_api.s, &ast_api.m, 0);
     astman_add_event_handler(ast_api.s, "CoreShowChannel",
-                                &CoreShowChannelsCallBack);
+                             &CoreShowChannelsCallBack);
     astman_add_event_handler(ast_api.s, "CoreShowChannelsComplete",
-                                &CoreShowChannelsCallBack);
+                             &CoreShowChannelsCallBack);
     astman_dump_message(&ast_api.m);
-    if ( res > 0 && response_is(&ast_api.m, "Success"))
-    {
+    if ( res > 0 && response_is(&ast_api.m, "Success")) {
         return res;
     }
     return ASTMAN_FAILURE;

@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  *   along with libast-api.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *  @file event.c
+ *  @brief Base Functions implementation for the ASTMAN API.
+ *  @author Baligh.GUESMI Emira.MHAROUECH Olivier.BENEZE
+ *  @version 0.1
+ *  @date 26 Avril 2010
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,8 +33,7 @@ int astDefaultCallback(struct mansession *s, struct message *m);
 static ASTMAN_EVENT_CALLBACK defaultCallback = &astDefaultCallback;
 
 
-int astDefaultCallback(struct mansession *s, struct message *m)
-{
+int astDefaultCallback(struct mansession *s, struct message *m) {
     static int i = 0;
     astlog(ASTLOG_WARNING,"%s not implemented called %d times\n", __FUNCTION__, i++);
     //astman_dump_message(&ast_api.m);
@@ -35,8 +41,7 @@ int astDefaultCallback(struct mansession *s, struct message *m)
 }
 
 
-ASTMAN_EVENT_CALLBACK astEventGetDefaultCallback()
-{
+ASTMAN_EVENT_CALLBACK astEventGetDefaultCallback() {
     return defaultCallback;
 }
 

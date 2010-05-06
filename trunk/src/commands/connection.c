@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  *   along with libast-api.  If not, see <http://www.gnu.org/licenses/>.
  */
+/**
+ *  @file connection.c
+ *  @brief Base Functions implementation for the ASTMAN API.
+ *  @author Baligh.GUESMI Emira.MHAROUECH Olivier.BENEZE
+ *  @version 0.1
+ *  @date 26 Avril 2010
+ */
 
 #include <stdio.h>
 #include <string.h>

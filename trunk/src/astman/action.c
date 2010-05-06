@@ -27,10 +27,11 @@
 #include "astlog.h"
 
 //*** MSGBUF macros ***
-struct msgbuf {
-  struct message *msg;
-  int count;
-  int len;
+struct msgbuf
+{
+    struct message *msg;
+    int count;
+    int len;
 };
 
 #define MSGBUF_INIT(L)	\
@@ -44,12 +45,14 @@ struct msgbuf {
   memcpy(_buf.msg+_buf.count, M, sizeof(struct message)); \
   _buf.count++; \
   if (_buf.count >= _buf.len) { \
-    _buf.msg = (struct message *)realloc(_buf.msg, _buf.len * 2 * sizeof(struct message)); \
+    _buf.msg = (struct message *)realloc(_buf.msg, \
+                _buf.len * 2 * sizeof(struct message)); \
     memset(_buf.msg+_buf.len, 0, _buf.len * sizeof(struct message)); \
     _buf.len *= 2; \
   }
 
 #define MSGBUF_MSG _buf.msg;
+
 
 /**
  * @fn astman_originate(struct mansession *s, struct message *m,
@@ -79,51 +82,59 @@ struct msgbuf {
  *  @param Async: Set to 'true' for fast origination
  */
 int astman_originate(struct mansession *s, struct message *m,
-		     char *channel,
-		     char *exten, char *context, int priority,
-		     char *application, char *data,
-		     int timeout,
-		     char *callerid,
-		     char *variable,
-		     char *account,
-		     int async,
-		     char *actionid) {
-  int res;
-  char params[MAX_LEN*12] = "";
-  char strbuf[12];
+                     char *channel,
+                     char *exten, char *context, int priority,
+                     char *application, char *data,
+                     int timeout,
+                     char *callerid,
+                     char *variable,
+                     char *account,
+                     int async,
+                     char *actionid)
+{
+    int res;
+    char params[MAX_LEN*12] = "";
+    char strbuf[12];
 
-  if (astman_strlen_zero(channel))
+    if (astman_strlen_zero(channel))
+        return ASTMAN_FAILURE;
+
+    if (!astman_strlen_zero(exten) && !astman_strlen_zero(context) &&
+            priority > 0 )
+    {
+        astman_add_param(params, sizeof(params), "Exten", exten);
+        astman_add_param(params, sizeof(params), "Context", context);
+        snprintf(strbuf, sizeof(strbuf), "%d", priority);
+        astman_add_param(params, sizeof(params), "Priority", strbuf);
+    }
+    else if (astman_add_param(params, sizeof(params), "Application", data) > 0)
+    {
+        astman_add_param(params, sizeof(params), "Data", data);
+    }
+    else
+    {
+        return ASTMAN_FAILURE;
+    }
+
+    if (timeout > 0)
+    {
+        snprintf(strbuf, sizeof(strbuf), "%d", timeout);
+        astman_add_param(params, sizeof(params), "Timeout", strbuf);
+    }
+    astman_add_param(params, sizeof(params), "Channel", channel);
+    astman_add_param(params, sizeof(params), "CallerId", callerid);
+    astman_add_param(params, sizeof(params), "Variable", variable);
+    astman_add_param(params, sizeof(params), "Account", account);
+    astman_add_param(params, sizeof(params), "Async", (async)?"true":"false");
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
+    astman_manager_action_params(s, "Originate", params);
+
+    res = astman_wait_for_response(s, m, 0);
+    if ( res > 0 && response_is(m, "Success"))
+    {
+        return res;
+    }
     return ASTMAN_FAILURE;
-
-  if (!astman_strlen_zero(exten) && !astman_strlen_zero(context) &&
-      priority > 0 ) {
-    astman_add_param(params, sizeof(params), "Exten", exten);
-    astman_add_param(params, sizeof(params), "Context", context);
-    snprintf(strbuf, sizeof(strbuf), "%d", priority);
-    astman_add_param(params, sizeof(params), "Priority", strbuf);
-  } else if (astman_add_param(params, sizeof(params), "Application", data) > 0) {
-    astman_add_param(params, sizeof(params), "Data", data);
-  } else {
-    return ASTMAN_FAILURE;
-  }
-
-  if (timeout > 0) {
-    snprintf(strbuf, sizeof(strbuf), "%d", timeout);
-    astman_add_param(params, sizeof(params), "Timeout", strbuf);
-  }
-  astman_add_param(params, sizeof(params), "Channel", channel);
-  astman_add_param(params, sizeof(params), "CallerId", callerid);
-  astman_add_param(params, sizeof(params), "Variable", variable);
-  astman_add_param(params, sizeof(params), "Account", account);
-  astman_add_param(params, sizeof(params), "Async", (async)?"true":"false");
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
-  astman_manager_action_params(s, "Originate", params);
-
-  res = astman_wait_for_response(s, m, 0);
-  if ( res > 0 && response_is(m, "Success")) {
-      return res;
-  }
-  return ASTMAN_FAILURE;
 }
 
 /**
@@ -135,18 +146,20 @@ int astman_originate(struct mansession *s, struct message *m,
  * @param actionid:
  * @param s:
  */
-int astman_ping(struct mansession *s, struct message *m, char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
+int astman_ping(struct mansession *s, struct message *m, char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
 
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
 
-  astman_manager_action_params(s, "Ping", params);
-  res = astman_wait_for_response(s, m, 0);
-  if ( res > 0 && response_is(m, "Pong")) {
-    return res;
-  }
-  return ASTMAN_FAILURE;
+    astman_manager_action_params(s, "Ping", params);
+    res = astman_wait_for_response(s, m, 0);
+    if ( res > 0 && response_is(m, "Pong"))
+    {
+        return res;
+    }
+    return ASTMAN_FAILURE;
 }
 
 /**
@@ -154,35 +167,39 @@ int astman_ping(struct mansession *s, struct message *m, char *actionid) {
  *  Execute CLI Command
  */
 int astman_command(struct mansession *s, struct message *m,
-		   char *command,
-		   char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
+                   char *command,
+                   char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
 
-  if (astman_strlen_zero(command))
+    if (astman_strlen_zero(command))
+        return ASTMAN_FAILURE;
+
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
+
+    astman_manager_action(s, "Command", "Command: %s\r\n%s", command, params);
+    res = astman_wait_for_response(s, m, 0);
+    if ( res > 0 && response_is(m, "Follows"))
+    {
+        return res;
+    }
     return ASTMAN_FAILURE;
-
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
-
-  astman_manager_action(s, "Command", "Command: %s\r\n%s", command, params);
-  res = astman_wait_for_response(s, m, 0);
-  if ( res > 0 && response_is(m, "Follows")) {
-    return res;
-  }
-  return ASTMAN_FAILURE;
 }
 
-static int astman_queues_callback(struct mansession *s, struct message *m) {
-  char event[80];
-  strncpy(event, astman_get_header(m, "Event"), sizeof(event));
+static int astman_queues_callback(struct mansession *s, struct message *m)
+{
+    char event[80];
+    strncpy(event, astman_get_header(m, "Event"), sizeof(event));
 
-  if (!strcasecmp(event, "QueueParams") ||
-      !strcasecmp(event, "QueueMember") ||
-      !strcasecmp(event, "QueueEnter")  ||
-      !strcasecmp(event, "QueueStatusComplete")) {
-    return 1; /* return wait_for_answer() */
-  }
-  return 0;
+    if (!strcasecmp(event, "QueueParams") ||
+            !strcasecmp(event, "QueueMember") ||
+            !strcasecmp(event, "QueueEnter")  ||
+            !strcasecmp(event, "QueueStatusComplete"))
+    {
+        return 1; /* return wait_for_answer() */
+    }
+    return 0;
 }
 
 /**
@@ -190,44 +207,53 @@ static int astman_queues_callback(struct mansession *s, struct message *m) {
  *  Queue, queue member and queued calls status
  */
 int astman_queuestatus(struct mansession *s, struct message **m,
-		       char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
-  char event[80];
-  struct message msg;
+                       char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
+    char event[80];
+    struct message msg;
 
-  MSGBUF_INIT(1);
+    MSGBUF_INIT(1);
 
-  astman_add_event_handler_system(s, astman_queues_callback);
+    astman_add_event_handler_system(s, astman_queues_callback);
 
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
-  astman_manager_action_params(s, "QueueStatus", params);
-  res = astman_wait_for_response(s, &msg, 0);
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
+    astman_manager_action_params(s, "QueueStatus", params);
+    res = astman_wait_for_response(s, &msg, 0);
 
-  if ( res > 0 && response_is(&msg, "Success")) {
-    for(;;) {
-      res = astman_wait_for_response(s, &msg, 0);
-      if ( res > 0 ) {
-	strncpy(event, astman_get_header(&msg, "Event"), sizeof(event));
+    if ( res > 0 && response_is(&msg, "Success"))
+    {
+        for (;;)
+        {
+            res = astman_wait_for_response(s, &msg, 0);
+            if ( res > 0 )
+            {
+                strncpy(event, astman_get_header(&msg, "Event"), sizeof(event));
 
-	if (!strcasecmp(event, "QueueParams") ||
-	    !strcasecmp(event, "QueueMember") ||
-	    !strcasecmp(event, "QueueEnter")) {
+                if (!strcasecmp(event, "QueueParams") ||
+                        !strcasecmp(event, "QueueMember") ||
+                        !strcasecmp(event, "QueueEnter"))
+                {
 
-	  MSGBUF_ADD(&msg);
+                    MSGBUF_ADD(&msg);
 
-	} else if (!strcasecmp(event, "QueueStatusComplete")) {
-	  *m = MSGBUF_MSG;
-	  astman_add_event_handler_system(s, NULL);
-	  return ASTMAN_SUCCESS;
-	}
-      } else {
-	goto out;
-      }
-    } /* infinity loop */
-  }
+                }
+                else if (!strcasecmp(event, "QueueStatusComplete"))
+                {
+                    *m = MSGBUF_MSG;
+                    astman_add_event_handler_system(s, NULL);
+                    return ASTMAN_SUCCESS;
+                }
+            }
+            else
+            {
+                goto out;
+            }
+        } /* infinity loop */
+    }
 
-  out:
+out:
     astman_add_event_handler_system(s, NULL);
     return ASTMAN_FAILURE;
 }
@@ -246,41 +272,48 @@ int astman_queuestatus(struct mansession *s, struct message **m,
 int astman_absolutetimeout(struct mansession *s, struct message *m,
                            char *channel,
                            int timeout,
-                           char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
-  char strtimeout[12] = "";
+                           char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
+    char strtimeout[12] = "";
 
-  if (astman_strlen_zero(channel))
+    if (astman_strlen_zero(channel))
+        return ASTMAN_FAILURE;
+
+    if (timeout>0)
+    {
+        snprintf(strtimeout, sizeof(strtimeout), "%d", timeout);
+    }
+    else
+    {
+        return ASTMAN_FAILURE;
+    }
+
+    astman_add_param(params, sizeof(params), "Channel", channel);
+    astman_add_param(params, sizeof(params), "Timeout", strtimeout);
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
+
+    astman_manager_action_params(s, "AbsoluteTimeout", params);
+    res = astman_wait_for_response(s, m, 0);
+    if ( res > 0 && response_is(m, "Success"))
+    {
+        return res;
+    }
     return ASTMAN_FAILURE;
-
-  if (timeout>0) {
-    snprintf(strtimeout, sizeof(strtimeout), "%d", timeout);
-  } else {
-    return ASTMAN_FAILURE;
-  }
-
-  astman_add_param(params, sizeof(params), "Channel", channel);
-  astman_add_param(params, sizeof(params), "Timeout", strtimeout);
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
-
-  astman_manager_action_params(s, "AbsoluteTimeout", params);
-  res = astman_wait_for_response(s, m, 0);
-  if ( res > 0 && response_is(m, "Success")) {
-    return res;
-  }
-  return ASTMAN_FAILURE;
 }
 
-static int astman_status_callback(struct mansession *s, struct message *m) {
-  char event[80];
-  strncpy(event, astman_get_header(m, "Event"), sizeof(event));
+static int astman_status_callback(struct mansession *s, struct message *m)
+{
+    char event[80];
+    strncpy(event, astman_get_header(m, "Event"), sizeof(event));
 
-  if (!strcasecmp(event, "Status")  ||
-      !strcasecmp(event, "StatusComplete")) {
-    return 1; /* return wait_for_answer() */
-  }
-  return 0;
+    if (!strcasecmp(event, "Status")  ||
+            !strcasecmp(event, "StatusComplete"))
+    {
+        return 1; /* return wait_for_answer() */
+    }
+    return 0;
 }
 
 /**
@@ -288,41 +321,50 @@ static int astman_status_callback(struct mansession *s, struct message *m) {
  *   Lists channel status
  */
 int astman_status(struct mansession *s, struct message **m,
-                  char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
-  char event[80];
-  struct message msg;
+                  char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
+    char event[80];
+    struct message msg;
 
-  MSGBUF_INIT(1);
+    MSGBUF_INIT(1);
 
-  astman_add_event_handler_system(s, astman_status_callback);
+    astman_add_event_handler_system(s, astman_status_callback);
 
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
 
-  astman_manager_action_params(s, "Status", params);
-  res = astman_wait_for_response(s, &msg, 0);
+    astman_manager_action_params(s, "Status", params);
+    res = astman_wait_for_response(s, &msg, 0);
 
-  if ( res > 0 && response_is(&msg, "Success")) {
-    for(;;) {
-      res = astman_wait_for_response(s, &msg, 0);
-      if ( res > 0 ) {
-	strncpy(event, astman_get_header(&msg, "Event"), sizeof(event));
+    if ( res > 0 && response_is(&msg, "Success"))
+    {
+        for (;;)
+        {
+            res = astman_wait_for_response(s, &msg, 0);
+            if ( res > 0 )
+            {
+                strncpy(event, astman_get_header(&msg, "Event"), sizeof(event));
 
-	if (!strcasecmp(event, "Status")) {
-	  MSGBUF_ADD(&msg);
-	} else if (!strcasecmp(event, "StatusComplete")) {
-	  *m = MSGBUF_MSG;
-	  astman_add_event_handler_system(s, NULL);
-	  return ASTMAN_SUCCESS;
-	}
-      } else {
-	goto out;
-      }
-    } /* infinity loop */
-  }
+                if (!strcasecmp(event, "Status"))
+                {
+                    MSGBUF_ADD(&msg);
+                }
+                else if (!strcasecmp(event, "StatusComplete"))
+                {
+                    *m = MSGBUF_MSG;
+                    astman_add_event_handler_system(s, NULL);
+                    return ASTMAN_SUCCESS;
+                }
+            }
+            else
+            {
+                goto out;
+            }
+        } /* infinity loop */
+    }
 
-  out:
+out:
     astman_add_event_handler_system(s, NULL);
     return ASTMAN_FAILURE;
 }
@@ -342,24 +384,25 @@ int astman_status(struct mansession *s, struct message **m,
         none  if no events should be sent.
 */
 int astman_events(struct mansession *s, struct message *m,
-		  char *eventmask,
-		  char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
+                  char *eventmask,
+                  char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
 
-  if (astman_strlen_zero(eventmask))
-    return ASTMAN_FAILURE;
+    if (astman_strlen_zero(eventmask))
+        return ASTMAN_FAILURE;
 
-  astman_add_param(params, sizeof(params), "EventMask", eventmask);
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
-  astman_manager_action_params(s, "Events", params);
+    astman_add_param(params, sizeof(params), "EventMask", eventmask);
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
+    astman_manager_action_params(s, "Events", params);
 
-  res = astman_wait_for_response(s, m, 0);
+    res = astman_wait_for_response(s, m, 0);
 
-  if ( res > 0 )
-    return res;
-  else
-    return ASTMAN_FAILURE;
+    if ( res > 0 )
+        return res;
+    else
+        return ASTMAN_FAILURE;
 }
 
 /**
@@ -370,24 +413,26 @@ int astman_events(struct mansession *s, struct message *m,
  *  *Variable: Variable name
  */
 int astman_getvar(struct mansession *s, struct message *m,
-		  char *channel, char *variable,
-		  char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
+                  char *channel, char *variable,
+                  char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
 
-  if (astman_strlen_zero(variable))
+    if (astman_strlen_zero(variable))
+        return ASTMAN_FAILURE;
+
+    astman_add_param(params, sizeof(params), "Channel", channel);
+    astman_add_param(params, sizeof(params), "Variable", variable);
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
+
+    astman_manager_action_params(s, "GetVar", params);
+    res = astman_wait_for_response(s, m, 0);
+    if ( res > 0 && response_is(m, "Success"))
+    {
+        return res;
+    }
     return ASTMAN_FAILURE;
-
-  astman_add_param(params, sizeof(params), "Channel", channel);
-  astman_add_param(params, sizeof(params), "Variable", variable);
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
-
-  astman_manager_action_params(s, "GetVar", params);
-  res = astman_wait_for_response(s, m, 0);
-  if ( res > 0 && response_is(m, "Success")) {
-    return res;
-  }
-  return ASTMAN_FAILURE;
 }
 
 /**
@@ -400,22 +445,24 @@ int astman_getvar(struct mansession *s, struct message *m,
  */
 int astman_setvar(struct mansession *s, struct message *m,
                   char *channel, char *variable, char *value,
-                  char *actionid) {
-  int res;
-  char params[MAX_LEN] = "";
+                  char *actionid)
+{
+    int res;
+    char params[MAX_LEN] = "";
 
-  if (astman_strlen_zero(variable))
+    if (astman_strlen_zero(variable))
+        return ASTMAN_FAILURE;
+
+    astman_add_param(params, sizeof(params), "Channel", channel);
+    astman_add_param(params, sizeof(params), "Variable", variable);
+    astman_add_param(params, sizeof(params), "Value", value);
+    astman_add_param(params, sizeof(params), "ActionId", actionid);
+
+    astman_manager_action_params(s, "SetVar", params);
+    res = astman_wait_for_response(s, m, 0);
+    if ( res > 0 && response_is(m, "Success"))
+    {
+        return res;
+    }
     return ASTMAN_FAILURE;
-
-  astman_add_param(params, sizeof(params), "Channel", channel);
-  astman_add_param(params, sizeof(params), "Variable", variable);
-  astman_add_param(params, sizeof(params), "Value", value);
-  astman_add_param(params, sizeof(params), "ActionId", actionid);
-
-  astman_manager_action_params(s, "SetVar", params);
-  res = astman_wait_for_response(s, m, 0);
-  if ( res > 0 && response_is(m, "Success")) {
-    return res;
-  }
-  return ASTMAN_FAILURE;
 }
