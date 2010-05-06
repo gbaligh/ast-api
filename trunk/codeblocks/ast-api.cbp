@@ -15,8 +15,10 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="-DBUILD_DLL" />
 					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
+					<Add directory="..\src\inc" />
+					<Add directory="..\inc" />
 				</Compiler>
 				<Linker>
 					<Add library="user32" />
@@ -40,9 +42,51 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Unit filename="main.cpp" />
-		<Unit filename="main.h" />
+		<Unit filename="..\inc\astapi.h" />
+		<Unit filename="..\src\astapi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\astconf.h" />
+		<Unit filename="..\src\astcore.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\astman\action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\astman\astman.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\commands\action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\commands\connection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\commands\event.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\commands\response.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\inc\action.h" />
+		<Unit filename="..\src\inc\astcore.h" />
+		<Unit filename="..\src\inc\astlog.h" />
+		<Unit filename="..\src\inc\astman.h" />
+		<Unit filename="..\src\inc\common.h" />
+		<Unit filename="..\src\inc\parser.h" />
+		<Unit filename="..\src\inc\sipconf.h" />
+		<Unit filename="..\src\sip\sipconf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="version.h">
+			<Option target="Release" />
+		</Unit>
 		<Extensions>
+			<AutoVersioning>
+				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
+				<Settings autoincrement="1" date_declarations="1" do_auto_increment="0" ask_to_increment="0" language="C" svn="0" svn_directory="D:\Travail\ast-api\.svn" header_path="version.h" />
+				<Changes_Log show_changes_editor="1" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
+			</AutoVersioning>
 			<code_completion />
 			<envvars />
 			<debugger />
