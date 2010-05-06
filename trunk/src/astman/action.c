@@ -1,6 +1,6 @@
 /*
- * libastman - library for using Asterisk Manager API.
- * Copyright (C) 2007 Noriyuki Suzuki
+ * libast-api - library for using Asterisk Manager API.
+ * Copyright (C) 2010 Baligh GUESMI
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,12 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+ * You should have received a copy of the GNU General Public License
+ *   along with libast-api.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* $Id: action.c,v 1.1.1.1 2007/07/31 08:03:36 noriyuki Exp $ */
+
 #include <string.h>
 #include <strings.h>
 #include <stdlib.h>
