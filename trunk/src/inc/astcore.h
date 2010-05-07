@@ -17,19 +17,14 @@ struct ast_core_setting_s {
     int  HTTPEnabled;
 };
 
-enum astCoreSettingHeaders {
-    AMIVersion,
-    AsteriskVersion,
-    SystemName,
-    CoreMaxCalls,
-    CoreMaxLoadAvg,
-    CoreRunUser,
-    CoreRunGroup,
-    CoreMaxFileHandlers,
-    CoreRealTimeEnabled,
-    CoreCDREnabled,
-    HTTPEnabled
-};
+typedef static struct {
+    char AMIversion[MAX_LEN];
+    char AsteriskVersion[MAX_LEN];
+    int  CoreMaxCalls;
+    char CoreStartupTime[MAX_LEN];
+    char CoreReloadTime[MAX_LEN];
+    int  CoreCurrentCalls;
+} CoreSetting;
 
 int coreSettingFromParseMessage(message_t *m);
 

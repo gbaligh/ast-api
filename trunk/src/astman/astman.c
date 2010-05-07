@@ -326,12 +326,9 @@ int astman_wait_for_response(struct mansession *s, struct message *msg, time_t t
     int proc_ev;
     char *sp;
     time_t begin, end;
-
     struct message m;
     m.hdrcount = 0;
-
     time(&begin);
-
     for (;;) {
         res = astman_get_input(s, m.headers[m.hdrcount]);
         if (res == 1) { /* get single line */
@@ -340,23 +337,16 @@ int astman_wait_for_response(struct mansession *s, struct message *msg, time_t t
                 if (strlen(m.headers[m.hdrcount]) < 2)
                     continue;
                 m.headers[m.hdrcount][strlen(m.headers[m.hdrcount]) - 2] = '\0';
-
                 /* finish line */
                 if (strlen(m.headers[m.hdrcount]) == 0) {
                     if (s->debug)
                         astman_dump_message(&m);
-
                     /* Response packet */
                     if (strlen(astman_get_header(&m, "Response"))) {
                         memcpy(msg, &m, sizeof(m));
                         memset(&m, 0, sizeof(m));
-                        if (strlen(astman_get_header(msg, "Eventlist"))) {
-                            printf("List Event Detected\n");
-                            continue;
-                        } else
-                            return ASTMAN_SUCCESS;
+                        return ASTMAN_SUCCESS;
                     }
-
                     /* Event packet */
                     if ((proc_ev = astman_process_message(s, &m)) < 0) {
                         /* Error */
@@ -368,7 +358,6 @@ int astman_wait_for_response(struct mansession *s, struct message *msg, time_t t
                         return ASTMAN_SUCCESS;
                     }
                     memset(&m, 0, sizeof(m));
-
                 } else if (m.hdrcount < MAX_HEADERS - 1) {
                     /* headers in packet */
 
@@ -377,10 +366,8 @@ int astman_wait_for_response(struct mansession *s, struct message *msg, time_t t
                                      strlen("Response: Follows"))) {
                         m.gettingdata = 1;
                     }
-
                     m.hdrcount++;
                 }
-
             } else {
                 /* Get raw data from command (m.gettingdata = 1) */
                 if ((sp = strstr(m.headers[m.hdrcount], "--END COMMAND--"))) {
@@ -401,7 +388,6 @@ int astman_wait_for_response(struct mansession *s, struct message *msg, time_t t
         }
     } /* end loop */
     return -1;
-
 }
 /*******************************************************************************
  *  \fn astman_add_param(char *buf, int buflen, char *header, char *value)
@@ -415,18 +401,14 @@ int astman_wait_for_response(struct mansession *s, struct message *msg, time_t t
 int astman_manager_action(struct mansession *s, char *action, char *fmt, ...) {
     char tmp[4096];
     va_list ap;
-
     snprintf(tmp, sizeof(tmp), "Action: %s\r\n", action);
     va_start(ap, fmt);
     vsnprintf(tmp+strlen(tmp), sizeof(tmp)-strlen(tmp), fmt, ap);
     va_end(ap);
     strcpy(tmp+strlen(tmp), "\r\n");
-
     send(s->fd, tmp, strlen(tmp), 0);
-
     if (s->debug)
         astman_dump_out_message(tmp);
-
     return 0;
 }
 /*******************************************************************************
