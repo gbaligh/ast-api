@@ -2,7 +2,12 @@ PROG =
 LIBRARY = libast-api.so 
 LDFLAGS =
 CFLAGS = -Wall -fPIC  -g
-LIBOBJS = src/astman/astman.o src/astman/action.o src/sip/sipconf.o src/astapi.o src/commands/action.o src/commands/event.o src/astcore.o
+LIBOBJS = src/astman/astman.o \
+	src/astman/action.o \
+	src/sip/sipconf.o \
+	src/astapi.o \
+	src/commands/action.o \
+	src/commands/event.o 
 INCLUDE = -I./src/inc -Iinc
 LIB = 	
 

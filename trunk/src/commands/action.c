@@ -33,7 +33,7 @@ extern astContext ast_api;
  *  \brief  List available manager commands
  *  \return ASTMAN_SUCCESS / ASTMAN_FAILURE
  ******************************************************************************/
-int astListCommands() {
+int astListCommands(char *actionid) {
     if (!ast_api.connected)
         return ASTMAN_FAILURE;
     char params[MAX_LEN] = "";

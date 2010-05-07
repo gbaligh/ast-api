@@ -35,10 +35,10 @@
 #include <stdarg.h>  /* vsnprintf */
 #include <string.h>
 #include <errno.h>
-#include <openssl/md5.h>
+//#include <openssl/md5.h>
 
 #include "astman.h"
-
+#include "astlog.h"
 /*******************************************************************************
  *  \def ASTMAN_DEFAULT_MANAGER_PORT
  *  \brief  Default port used to connect to the AMI Asterisk
