@@ -5,7 +5,7 @@ CFLAGS = -Wall -fPIC  -g
 LIBOBJS = src/astman/astman.o \
 	src/astman/action.o \
 	src/sip/sipconf.o \
-	src/astapi.o \
+	src/commands/connection.o \
 	src/commands/action.o \
 	src/commands/event.o 
 INCLUDE = -I./src/inc -Iinc
