@@ -30,8 +30,8 @@ $(LIBRARY): $(LIBOBJS)
 libast-api.so: $(LIBOBJS)
 	@echo [Creating $@ LIB]
 	@$(LD) $(LIBOBJS) -shared -o $@
-	@cp $@ $@.unstripped
-	@$(STRIP) $@
+#	@cp $@ $@.unstripped
+#	@$(STRIP) $@
 
 libast-api.a: $(LIBOBJS)
 	@echo [Creating $@ LIB]
@@ -47,3 +47,7 @@ clean:
 	@rm -f $(LIBOBJS)
 	@echo [Remove generated LIBs]
 	@rm -f $(LIBRARY)
+
+test:
+	@echo [Making Samples ...]
+	$(MAKE) -C samples
