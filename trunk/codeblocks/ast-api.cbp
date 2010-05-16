@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\ast-api" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/Debug/ast-api" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -17,16 +17,16 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DBUILD_DLL" />
-					<Add directory="..\src\inc" />
-					<Add directory="..\inc" />
+					<Add directory="../src/inc" />
+					<Add directory="../inc" />
 				</Compiler>
 				<Linker>
 					<Add library="user32" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\ast-api" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option output="bin/Release/ast-api" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -42,44 +42,41 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Unit filename="..\inc\astapi.h" />
-		<Unit filename="..\src\astapi.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\astconf.h" />
-		<Unit filename="..\src\astcore.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\astman\action.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\astman\astman.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\commands\action.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\commands\connection.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\commands\event.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\commands\response.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\src\inc\action.h" />
-		<Unit filename="..\src\inc\astcore.h" />
-		<Unit filename="..\src\inc\astlog.h" />
-		<Unit filename="..\src\inc\astman.h" />
-		<Unit filename="..\src\inc\common.h" />
-		<Unit filename="..\src\inc\parser.h" />
-		<Unit filename="..\src\inc\sipconf.h" />
-		<Unit filename="..\src\sip\sipconf.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="version.h">
 			<Option target="Release" />
+		</Unit>
+		<Unit filename="../inc/astapi.h" />
+		<Unit filename="../src/astconf.h" />
+		<Unit filename="../src/astcore.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/astman/action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/astman/astman.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/commands/action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/commands/connection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/commands/event.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/commands/response.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/inc/action.h" />
+		<Unit filename="../src/inc/astcore.h" />
+		<Unit filename="../src/inc/astlog.h" />
+		<Unit filename="../src/inc/astman.h" />
+		<Unit filename="../src/inc/common.h" />
+		<Unit filename="../src/inc/parser.h" />
+		<Unit filename="../src/inc/sipconf.h" />
+		<Unit filename="../src/sip/sipconf.c">
+			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
 			<AutoVersioning>
