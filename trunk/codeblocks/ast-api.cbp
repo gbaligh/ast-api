@@ -3,6 +3,8 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="ast-api" />
+		<Option makefile="../Makefile" />
+		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -46,6 +48,9 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="../inc/astapi.h" />
+		<Unit filename="../samples/connection.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../src/astconf.h" />
 		<Unit filename="../src/astcore.c">
 			<Option compilerVar="CC" />

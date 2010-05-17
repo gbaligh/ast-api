@@ -1,3 +1,4 @@
+/* $Id: astcore.h,v 1.2 2010/05/10 10:39:30 bguesmi Exp $ */
 #ifndef _ASTCORE_H
 #define _ASTCORE_H
 
@@ -17,14 +18,19 @@ struct ast_core_setting_s {
     int  HTTPEnabled;
 };
 
-typedef static struct {
-    char AMIversion[MAX_LEN];
-    char AsteriskVersion[MAX_LEN];
-    int  CoreMaxCalls;
-    char CoreStartupTime[MAX_LEN];
-    char CoreReloadTime[MAX_LEN];
-    int  CoreCurrentCalls;
-} CoreSetting;
+enum astCoreSettingHeaders {
+    AMIVersion,
+    AsteriskVersion,
+    SystemName,
+    CoreMaxCalls,
+    CoreMaxLoadAvg,
+    CoreRunUser,
+    CoreRunGroup,
+    CoreMaxFileHandlers,
+    CoreRealTimeEnabled,
+    CoreCDREnabled,
+    HTTPEnabled
+};
 
 int coreSettingFromParseMessage(message_t *m);
 

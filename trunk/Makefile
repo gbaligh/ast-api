@@ -1,39 +1,48 @@
 PROG =
-LIBRARY = libast-api.so 
+LIBRARY.SO = libast-api/libast-api.so
 LDFLAGS =
 CFLAGS = -Wall -fPIC  -g
 LIBOBJS = src/astman/astman.o \
-	src/astman/action.o \
-	src/sip/sipconf.o \
-	src/commands/connection.o \
-	src/commands/action.o \
-	src/commands/event.o 
-INCLUDE = -I./src/inc -Iinc
+	  src/commands/action.o \
+	  src/commands/connection.o \
+	  src/commands/event.o \
+	  src/sip/peer.o \
+	  src/sip/sipconf.o \
+	  src/sip/registry.o
+
+INCLUDE = -Isrc/inc -Ilibast-api
 LIB = 	
 
 
-
+ifndef MAKEHOST
+CC = mips-linux-uclibc-gcc -Wall -O0 $(INCLUDE)
+LD = mips-linux-uclibc-gcc $(LIB)
+STRIP = mips-linux-uclibc-strip
+else
 CC = gcc $(CFLAGS) -O0 $(INCLUDE)
 LD = gcc $(LDFLAGS) $(LIB)
 STRIP = strip
+endif
 
 
-all: $(LIBRARY)
+
+all: $(LIBRARY.SO)
+
+test:
+	$(MAKE) -C test
 
 doc:
 	@echo "Generating document with Doxygen..."
 	@doxygen doxygen.cfg
 
 
-$(LIBRARY): $(LIBOBJS)
-
-libast-api.so: $(LIBOBJS)
+$(LIBRARY.SO): $(LIBOBJS)
 	@echo [Creating $@ LIB]
 	@$(LD) $(LIBOBJS) -shared -o $@
-#	@cp $@ $@.unstripped
-#	@$(STRIP) $@
+	@cp $@ $@.unstripped
+	@$(STRIP) $@
 
-libast-api.a: $(LIBOBJS)
+$(LIBRARY.A): $(LIBOBJS)
 	@echo [Creating $@ LIB]
 	@$(AR) crv $@ 
 
@@ -46,8 +55,5 @@ clean:
 	@echo [Remove OBJ file]
 	@rm -f $(LIBOBJS)
 	@echo [Remove generated LIBs]
-	@rm -f $(LIBRARY)
-
-test:
-	@echo [Making Samples ...]
-	$(MAKE) -C samples
+	@rm -f $(LIBRARY.SO)
+	@rm -f $(LIBRARY.SO).unstripped

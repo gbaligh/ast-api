@@ -1,48 +1,67 @@
-/*
- * libast-api - library for using Asterisk Manager API.
- * Copyright (C) 2010 Baligh GUESMI
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- *   along with libast-api.  If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *  @file event.c
- *  @brief Base Functions implementation for the ASTMAN API.
- *  @author Baligh.GUESMI Emira.MHAROUECH Olivier.BENEZE
- *  @version 0.1
- *  @date 26 Avril 2010
- */
-
+/* $Id: event.c,v 1.4 2010/05/17 09:32:43 bguesmi Exp $ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "common.h"
+#include "event.h"
+
+extern astContext ast_api;
+
 
 int astDefaultCallback(struct mansession *s, struct message *m);
 static ASTMAN_EVENT_CALLBACK defaultCallback = &astDefaultCallback;
 
 
-int astDefaultCallback(struct mansession *s, struct message *m) {
+int astDefaultCallback(struct mansession *s, struct message *m)
+{
     static int i = 0;
     astlog(ASTLOG_WARNING,"%s not implemented called %d times\n", __FUNCTION__, i++);
     //astman_dump_message(&ast_api.m);
-    return i;
+    return ASTMAN_SUCCESS;
 }
 
 
-ASTMAN_EVENT_CALLBACK astEventGetDefaultCallback() {
+ASTMAN_EVENT_CALLBACK astEventGetDefaultCallback()
+{
     return defaultCallback;
 }
 
 
+int CoreShowChannelsCallBack(struct mansession *s, struct message *m)
+{
+
+    return ASTMAN_FAILURE;
+}
+
+
+int SipPeersCallBack(struct mansession *s, struct message *m)
+{
+    char *event;
+
+    event = astman_get_header(m, ASTMAN_HEADER_EVENT);
+
+    if (!strncasecmp(event, ASTMAN_EVENT_PEER_ENTRY, strlen(ASTMAN_EVENT_PEER_ENTRY))) {
+      return ASTMAN_SUCCESS;
+    } else if (!strncasecmp(event, ASTMAN_EVENT_PEER_LIST_COMPLETE, strlen(ASTMAN_EVENT_PEER_LIST_COMPLETE))) {
+        return ASTMAN_SUCCESS;
+    }
+
+    return ASTMAN_FAILURE;
+}
+
+
+int SipShowRegistryCallBack(struct mansession *s, struct message *m)
+{
+    char *event;
+
+    event = astman_get_header(m, ASTMAN_HEADER_EVENT);
+
+    if (!strncasecmp(event, ASTMAN_EVENT_REGISTRY_ENTRY, strlen(ASTMAN_EVENT_REGISTRY_ENTRY))) {
+      return ASTMAN_SUCCESS;
+    } else if (!strncasecmp(event, ASTMAN_EVENT_REGISTRATIONS_COMPLETE, strlen(ASTMAN_EVENT_REGISTRATIONS_COMPLETE))) {
+        return ASTMAN_SUCCESS;
+    }
+
+    return ASTMAN_FAILURE;
+}

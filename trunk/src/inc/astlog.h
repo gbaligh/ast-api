@@ -1,3 +1,4 @@
+/* $Id: astlog.h,v 1.4 2010/05/17 09:32:43 bguesmi Exp $ */
 #ifndef ASTLOG_H_INCLUDED
 #define ASTLOG_H_INCLUDED
 /**
@@ -18,17 +19,15 @@ enum astlog_level {
 };
 
 
-/*static struct astlog_s {
-    enum astlog_level id;
-    char *str;
-} astlog_map[] = {
-    {ASTLOG_INFO, "[AST_LIB_INFO]"},
-    {ASTLOG_WARNING, "[AST_LIB_WARNING]"},
-    {ASTLOG_ERROR, "[AST_LIB_ERROR]"}
-};*/
+static char *astlog_map[] = {
+    "AST_API_INFO",
+    "AST_API_WARNING",
+    "AST_API_ERROR"
+};
 
 
-#define astlog(log_level,format,...) fprintf(stdout, "%d: "format"\n", log_level, ##__VA_ARGS__)
+#define astlog(log_level,format,...) fprintf(stdout, "[%s:%d]-[%s]: "format"\n", __FUNCTION__, __LINE__, \
+                                                astlog_map[log_level], ##__VA_ARGS__)
 
 
-#endif // ASTLOG_H_INCLUDED
+#endif /* ASTLOG_H_INCLUDED*/

@@ -1,3 +1,4 @@
+/* $Id: astconf.h,v 1.2 2010/05/10 10:37:56 bguesmi Exp $ */
 #ifndef _ASTCONF_H
 #define _ASTCONF_H
 
