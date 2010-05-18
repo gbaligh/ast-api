@@ -18,16 +18,18 @@ enum astlog_level {
     ASTLOG_ERROR
 };
 
-
+#ifdef AST_DEBUG
 static char *astlog_map[] = {
     "AST_API_INFO",
     "AST_API_WARNING",
     "AST_API_ERROR"
 };
 
-
-#define astlog(log_level,format,...) fprintf(stdout, "[%s:%d]-[%s]: "format"\n", __FUNCTION__, __LINE__, \
-                                                astlog_map[log_level], ##__VA_ARGS__)
+#define astlog(log_level,format,...) fprintf(stdout, "[%s]-[%s:%d]: "format"\n", astlog_map[log_level], __FUNCTION__, __LINE__, \
+                                                 ##__VA_ARGS__)
+#else
+#define astlog(log_level,format,...)
+#endif
 
 
 #endif /* ASTLOG_H_INCLUDED*/

@@ -15,8 +15,6 @@ static ASTMAN_EVENT_CALLBACK defaultCallback = &astDefaultCallback;
 
 int astDefaultCallback(struct mansession *s, struct message *m)
 {
-    static int i = 0;
-    astlog(ASTLOG_WARNING,"%s not implemented called %d times\n", __FUNCTION__, i++);
     //astman_dump_message(&ast_api.m);
     return ASTMAN_SUCCESS;
 }

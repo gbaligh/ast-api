@@ -81,57 +81,13 @@ int astman_add_param(char *buf, int buflen, char *header, const char *value)
  *  \param  value
  *  \return Number of wrote characters into the buf
  */
-void astman_dump_message(struct message *m)
-{
-  int x;
-  printf("< Received:\n");
-  for (x=0;x<m->hdrcount;x++) {
-    printf("< %s\n", m->headers[x]);
-  }
-  printf("\n");
-}
-/**
- *  \fn astman_add_param(char *buf, int buflen, char *header, char *value)
- *  \brief  Add a new parameter to the Command
- *  \param  buf
- *  \param  buflen
- *  \param  header
- *  \param  value
- *  \return Number of wrote characters into the buf
- */
-static void astman_dump_out_message(char *message)
-{
-  char *s;
-  printf("> Transmitted:\n");
-  //  printf("> Action: %s\n", action);
-  while(*message) {
-    s = message;
-    while(*s && (*s != '\r')) s++;
-    if (!*s)
-      break;
-    *s = '\0';
-    printf("> %s\n", message);
-    s+=2;
-    message = s;
-  }
-  printf("\n");
-}
-/**
- *  \fn astman_add_param(char *buf, int buflen, char *header, char *value)
- *  \brief  Add a new parameter to the Command
- *  \param  buf
- *  \param  buflen
- *  \param  header
- *  \param  value
- *  \return Number of wrote characters into the buf
- */
 struct mansession *astman_open(void) {
   int so;
   static struct mansession s;
 
   so = socket(AF_INET, SOCK_STREAM, 0);
   if (so < 0) {
-    perror("socket");
+    astlog(ASTLOG_ERROR, "socket");
   }
 
   s.fd = so;
@@ -153,13 +109,13 @@ int astman_connect(struct mansession *s, const char *hostname, const int port) {
 
   s->fd = socket(AF_INET, SOCK_STREAM, 0);
   if ( s->fd < 0 ) {
-    perror("socket");
+    astlog(ASTLOG_ERROR, "socket");
     return -1;
   }
 
   hp = gethostbyname(hostname);
   if (!hp) {
-    fprintf(stderr, "No such address: %s\n", hostname);
+    astlog(ASTLOG_ERROR, "No such address: %s\n", hostname);
     return -1;
   }
 
@@ -172,7 +128,7 @@ int astman_connect(struct mansession *s, const char *hostname, const int port) {
 
 
   if ( connect(s->fd, (struct sockaddr *) &(s->sin), sizeof(s->sin)) < 0 ) {
-    perror("connect");
+    astlog(ASTLOG_ERROR, "connect");
     return -1;
   }
   return 0;
@@ -221,7 +177,7 @@ static int astman_get_input(struct mansession *s, char *output)
   }
 
   if (s->inlen >= sizeof(s->inbuf) - 1) {
-    fprintf(stderr, "Dumping long line with no return from %s: %s\n", inet_ntoa(s->sin.sin_addr), s->inbuf);
+    astlog(ASTLOG_ERROR, "Dumping long line with no return from %s: %s\n", inet_ntoa(s->sin.sin_addr), s->inbuf);
     s->inlen = 0;
   }
   FD_ZERO(&fds);
@@ -229,7 +185,7 @@ static int astman_get_input(struct mansession *s, char *output)
   res = select(s->fd + 1, &fds, NULL, NULL, &tv);
 
   if (res < 0) {
-    fprintf(stderr, "Select returned error: %s\n", strerror(errno));
+    astlog(ASTLOG_ERROR, "Select returned error: %s\n", strerror(errno));
   } else if (res > 0) {
     res = recv(s->fd, s->inbuf + s->inlen, sizeof(s->inbuf) - 1 - s->inlen, 0);
 
@@ -282,14 +238,14 @@ static int astman_process_message(struct mansession *s, struct message *m)
 
   strncpy(event, astman_get_header(m, "Event"), sizeof(event));
   if (!strlen(event)) {
-    fprintf(stderr, "Missing event in request\n");
+    astlog(ASTLOG_ERROR, "Missing event in request\n");
     return 0;
   }
 
   if (s->debug) {
-    printf("Got event packet: %s\n", event);
+    astlog(ASTLOG_INFO, "Got event packet: %s\n", event);
     for (x=0;x<m->hdrcount;x++) {
-      printf("Header: %s\n", m->headers[x]);
+      astlog(ASTLOG_INFO, "Header: %s\n", m->headers[x]);
     }
   }
 
@@ -316,7 +272,7 @@ static int astman_process_message(struct mansession *s, struct message *m)
   }
 
   if (s->debug && x >= s->eventcount)
-    fprintf(stderr, "Ignoring unknown event '%s'\n", event);
+    astlog(ASTLOG_INFO, "Ignoring unknown event '%s'\n", event);
 
   return 0;
 }
@@ -494,7 +450,7 @@ int astman_add_event_handler(struct mansession *s, char *event, ASTMAN_EVENT_CAL
 	s->eventcount--;
 	return 0;
       } else {
-	fprintf(stderr, "%s handler is already defined, not over-writing.", event);
+	astlog(ASTLOG_WARNING, "%s handler is already defined, not over-writing.", event);
 	return -1;
       }
     }

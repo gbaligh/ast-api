@@ -14,15 +14,9 @@ INCLUDE = -Isrc/inc -Ilibast-api
 LIB = 	
 
 
-ifndef MAKEHOST
-CC = mips-linux-uclibc-gcc -Wall -O0 $(INCLUDE)
-LD = mips-linux-uclibc-gcc $(LIB)
-STRIP = mips-linux-uclibc-strip
-else
 CC = gcc $(CFLAGS) -O0 $(INCLUDE)
 LD = gcc $(LDFLAGS) $(LIB)
 STRIP = strip
-endif
 
 
 
@@ -57,3 +51,6 @@ clean:
 	@echo [Remove generated LIBs]
 	@rm -f $(LIBRARY.SO)
 	@rm -f $(LIBRARY.SO).unstripped
+
+install:
+	@echo [installing LIB to the system]

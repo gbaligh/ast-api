@@ -97,12 +97,12 @@ int astSipPeers(char *actionid, message_t *m, int *size)
                 else
                 {
                     *size = atoi(astman_get_header(&ast_api.m, "ListItems"));
-                    break;
+                    return ASTMAN_SUCCESS;
                 }
                // astman_dump_message(&ast_api.m);
             }
     }
-    return ASTMAN_SUCCESS;
+    return ASTMAN_FAILURE;
 }
 
 int astSipShowPeer(char *peer, char *actionid)
