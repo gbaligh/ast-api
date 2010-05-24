@@ -20,10 +20,10 @@
  * Free Software Foundation, Inc.,
  ******************************************************************************/
 /*******************************************************************************
- *  @file
+ *  @file update.h
  *  @brief
  *  @author Baligh.GUESMI
- *  @date
+ *  @date 20100524
  ******************************************************************************/
 /** NewCat,RenameCat,DelCat,EmptyCat,Update,Delete,Append,Insert */
 #define UPDATE_ACTION_NEW_CAT       "NewCat"
