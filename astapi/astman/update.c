@@ -38,7 +38,13 @@
 
 static int _nb_action = -1;
 static char params[MAX_PARAMS_LEN];
-
+/**
+ *
+ * @param src_filename
+ * @param dst_filename
+ * @param reload
+ * @return
+ */
 int astman_update_config_init(char *src_filename,
                               char *dst_filename,
                               int reload)
@@ -48,7 +54,16 @@ int astman_update_config_init(char *src_filename,
     astman_add_param(params, sizeof(params), "Reload", reload?"yes":"no");
     return ASTMAN_SUCCESS;
 }
-
+/**
+ *
+ * @param action
+ * @param cat
+ * @param var
+ * @param val
+ * @param match
+ * @param line
+ * @return
+ */
 int astman_update_config_add_action(char *action,
                                     char *cat,
                                     char *var, char *val,
@@ -86,7 +101,12 @@ int astman_update_config_add_action(char *action,
     }
     return ASTMAN_SUCCESS;
 }
-
+/**
+ *
+ * @param s
+ * @param m
+ * @return
+ */
 int astman_update_config_execute(struct mansession *s, struct message *m)
 {
     int res = ASTMAN_FAILURE;
