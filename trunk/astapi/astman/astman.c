@@ -419,17 +419,6 @@ int astman_manager_action(struct mansession *s, char *action, char *fmt, ...) {
 int astman_manager_action_params(struct mansession *s, char *action, char *params) {
     return astman_manager_action(s, action, "%s", params);
 }
-
-/*
-static int has_input(struct mansession *s)
-{
-  int x;
-  for (x=1;x<s->inlen;x++)
-    if ((s->inbuf[x] == '\n') && (s->inbuf[x-1] == '\r'))
-      return 1;
-  return 0;
-}
-*/
 /*******************************************************************************
  *  \fn astman_add_param(char *buf, int buflen, char *header, char *value)
  *  \brief  Add a new parameter to the Command
