@@ -86,6 +86,7 @@ int astDisconnect()
     astlog_init();
     astman_logoff(gSession);
     astman_disconnect(gSession);
+    _is_connected = 0; // FIX ISSUE 1:  chrisTr1987
     astlog_end();
     return ASTMAN_SUCCESS;
 }
