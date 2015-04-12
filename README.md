@@ -1,2 +1,2 @@
 # ast-api
-Asterisk AMI API for C
+Asterisk AMI API in C
