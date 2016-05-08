@@ -163,3 +163,4 @@ void astman_disconnect(struct mansession *s);
  ******************************************************************************/
 void astman_dump_message(struct message *m);
 #endif // ASTMAN_H_INCLUDED
+
