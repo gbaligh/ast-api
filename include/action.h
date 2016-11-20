@@ -25,8 +25,7 @@
  *  @author Baligh.GUESMI
  *  @date 20100524
  ******************************************************************************/
-#include "astman.h"
-#include "update.h"
+#include <astman.h>
 /*******************************************************************************
  * @def esponse_is(M, RES)
  * @brief Get response Code

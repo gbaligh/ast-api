@@ -26,10 +26,10 @@
 #include <strings.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "astman.h"
-#include "astevent.h"
-#include "astlog.h"
-#include "action.h"
+#include <astman.h>
+#include <astevent.h>
+#include <astlog.h>
+#include <action.h>
 /*******************************************************************************
  *
  ******************************************************************************/

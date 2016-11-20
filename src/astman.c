@@ -22,6 +22,7 @@
  *  @author Baligh.GUESMI
  *  @date 20100524
  ******************************************************************************/
+#define _BSD_SOURCE
 #include <sys/types.h>
 #include <sys/socket.h> /* send/recv */
 #include <netinet/in.h>  /* struct sockaddr_in */
@@ -30,14 +31,15 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <strings.h>
 #include <sys/select.h>
 #include <stdarg.h>  /* vsnprintf */
 #include <string.h>
 #include <errno.h>
 #include <time.h>   /* time */
-#include "astman.h"
-#include "astevent.h"
-#include "astlog.h"
+#include <astman.h>
+#include <astevent.h>
+#include <astlog.h>
 /*******************************************************************************
  *  \def ASTMAN_DEFAULT_MANAGER_PORT
  *  \brief  Default port used to connect to the AMI Asterisk
@@ -132,9 +134,10 @@ struct mansession *astman_open(void) {
  *  \return Number of wrote characters into the buf
  ******************************************************************************/
 int astman_connect(struct mansession *s, char *hostname, int port) {
-    struct hostent *hp;
+    struct hostent *hp = (struct hostent *)0;
     struct sockaddr_in addr;
-    addr = s->sin;
+    
+    memcpy(&addr, &s->sin, sizeof(struct sockaddr_in));
 
     s->fd = socket(AF_INET, SOCK_STREAM, 0);
     if ( s->fd < 0 ) {
@@ -153,13 +156,14 @@ int astman_connect(struct mansession *s, char *hostname, int port) {
         s->sin.sin_port = htons(port);
     else
         s->sin.sin_port = htons(ASTMAN_DEFAULT_MANAGER_PORT);
-    memcpy(&(s->sin.sin_addr), hp->h_addr, sizeof(s->sin.sin_addr));
-
+    
+    memcpy(&(s->sin.sin_addr), hp->h_addr_list[0], sizeof(s->sin.sin_addr));
 
     if ( connect(s->fd, (struct sockaddr *) &(s->sin), sizeof(s->sin)) < 0 ) {
         perror("connect");
         return -1;
     }
+
     return 0;
 }
 /*******************************************************************************

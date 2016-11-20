@@ -50,7 +50,7 @@ struct mansession {
   char inbuf[MAX_LEN];      /**!< buffer */
   unsigned int inlen;                /**!< length of the buffer */
   struct sockaddr_in sin;   /**!< address of the socket */
-  struct event {
+  struct event_str {
     char *event;    /**!< the event ID */
     int (*func)(struct mansession *s, struct message *m); /**!< callback associated to this event */
   } events[MAX_EVENTS]; /**!< event registred to */
