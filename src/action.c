@@ -578,13 +578,13 @@ int astman_sip_qualify_peer(struct mansession *s, struct message *m,
 }
 /*******************************************************************************
  * @brief Action: SIPshowregistry
-Synopsis: Show SIP registrations (text format)
-Privilege: system,reporting,all
-Description: Lists all registration requests and status
-Registrations will follow as separate events. followed by a final event called
-RegistrationsComplete.
-Variables:
-  ActionID: <id>       Action ID for this transaction. Will be returned.
+ * Synopsis: Show SIP registrations (text format)
+ * Privilege: system,reporting,all
+ * Description: Lists all registration requests and status
+ * Registrations will follow as separate events. followed by a final event called
+ * RegistrationsComplete.
+ * Variables:
+ *  ActionID: <id>       Action ID for this transaction. Will be returned.
  * @param ActionID: <id>	Action ID for this transaction. Will be returned.
  ******************************************************************************/
 int astman_sip_show_registry(struct mansession *s, struct message **m,
